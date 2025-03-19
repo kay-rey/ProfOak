@@ -22,7 +22,7 @@ This is a Discord bot that allows users to search for Pokemon cards by name and 
 
     ```bash
     git clone <repository_url>
-    cd discord-pokemon-card-bot
+    cd ProfOak
     ```
 
 2.  **Install dependencies:**
