@@ -1,12 +1,13 @@
 # Discord Pokemon Card Bot
 
 This is a Discord bot that allows users to search for Pokemon cards by name and display their images and details in the chat.
+Currently, the bot only returns a card if it has a regulation mark of "F" or higher
 
 ## Features
 
 * **Card Search:** Users can search for Pokemon cards by name using the `!card <card name>` command.
 * **Card Display:** The bot displays the card's image, name, set, card number, and rarity in an embedded message.
-* **Error Handling:** The bot handles API errors, invalid card names, and other potential issues gracefully.
+* **Error Handling:** The bot handles API errors, invalid card names, cards not legal in standard, and other potential issues gracefully.
 * **Partial Matching:** Allows users to search for cards using partial names.
 * **Uses PokemonTCG.io API:** Retrieves card data from the PokemonTCG.io API.
 
