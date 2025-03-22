@@ -1,6 +1,7 @@
+import os
 import discord
 import requests
-import os
+import pokeData
 from dotenv import load_dotenv
 from typing import Final
 
@@ -14,32 +15,11 @@ intents.message_content = True  # Enable message content intent
 
 client = discord.Client(intents=intents)
 
-def find_first_legal_standard(pokelist): #not working correctly because the Pokemon API is not up to date
-  for pokemans in pokelist['data']:
-    if 'legalities' in pokemans and 'standard' in pokemans['legalities'] and pokemans['legalities']['standard'] == 'Legal':
-      return pokemans
-  return None
-
-def find_first_regulation_mark_f_or_higher(pokelist):
-    """
-    Finds and returns the first entry in the 'pokelist' list where
-    'regulationMark' is 'F', 'G', 'H', or a letter that comes later in the alphabet.
-
-    Args:
-        pokelist: A dictionary containing a 'data' list of entries.
-
-    Returns:
-        The first entry where 'regulationMark' is 'F', 'G', 'H', or higher,
-        or None if no such entry is found.
-    """
-    for pokeman in pokelist['data']:
-        if 'regulationMark' in pokeman and pokeman['regulationMark'] >= 'F':
-            return pokeman
-    return None
 
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
+
 
 @client.event
 async def on_message(message):
@@ -57,7 +37,7 @@ async def on_message(message):
                 "X-Api-Key": os.getenv("POKEMONTCG_IO_API_KEY")
             }
             params = {
-                "q": f'name:"{card_name}*"' # Using wildcard for partial matches
+                "q": f'name:"{card_name}*"'  # Using wildcard for partial matches
             }
 
             response = requests.get(POKEMONTCG_IO_URL, headers=headers, params=params)
@@ -65,14 +45,14 @@ async def on_message(message):
             data = response.json()
 
             if data['data']:
-                card = find_first_regulation_mark_f_or_higher(data) #Get first card of results
+                card = pokeData.find_first_regulation_mark_f_or_higher(data)  # Get first card of results
                 if card is None:
                     await message.channel.send(f"'{card_name}' is not legal in standard.")
                 else:
                     card_name_response = card['name']
                     card_image = card['images']['large']
 
-                    embed = discord.Embed(title=card_name_response, color=0x00B0F0) # Embed for better formatting
+                    embed = discord.Embed(title=card_name_response, color=0x00B0F0)  # Embed for better formatting
                     embed.set_image(url=card_image)
 
                     if 'set' in card:
@@ -100,8 +80,10 @@ async def on_message(message):
             await message.channel.send(f"An unexpected error occurred: {e}")
             print(f"Unexpected error: {e}")
 
+
 def main() -> None:
     client.run(token=TOKEN)
+
 
 if __name__ == '__main__':
     main()
